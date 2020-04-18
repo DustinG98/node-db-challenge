@@ -14,11 +14,24 @@ function getProjectById(id) {
 //GET PROJECT AND TASKS BY PROJECT ID
 function getProjectTasksById(id) {
     return getProjectById(id).then(project => {
+        
+        if(project[0].completed === 0) {
+            project[0] = { ...project[0], completed:  false } 
+        } else {
+            project[0] = { ...project[0], completed: true }
+        }
         return db('projects').where({ "projects.id": id })
             .join('tasks', 'tasks.project_id', '=', 'projects.id')
             .select('tasks.*')
         .then(tasks => {
-            return { ...project[0], tasks: tasks }
+            let newTasks = tasks.map(task => {
+                if(task.completed === 0) {
+                    return task = { ...task, completed: false }
+                } else {
+                    return task = { ...task, completed: true }
+                }
+            })
+            return { ...project[0], tasks: newTasks }
         })
     })
 }
