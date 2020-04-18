@@ -14,7 +14,6 @@ function getProjectById(id) {
 //GET PROJECT AND TASKS BY PROJECT ID
 function getProjectTasksById(id) {
     return getProjectById(id).then(project => {
-        
         if(project[0].completed === 0) {
             project[0] = { ...project[0], completed:  false } 
         } else {
@@ -25,6 +24,7 @@ function getProjectTasksById(id) {
             .select('tasks.*')
         .then(tasks => {
             let newTasks = tasks.map(task => {
+                delete task.project_id;
                 if(task.completed === 0) {
                     return task = { ...task, completed: false }
                 } else {
